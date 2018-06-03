@@ -8,7 +8,7 @@ namespace CodingHelmet.SampleApp.Domain.Models
         public MoneyTransaction Deposit(decimal amount) =>
             new MoneyTransaction(amount);
 
-        public IOption<MoneyTransaction> TryWithdraw(decimal amount) =>
-            Option.Some(new MoneyTransaction(-amount));
+        public Option<MoneyTransaction> TryWithdraw(decimal amount) =>
+            new MoneyTransaction(-amount);
     }
 }

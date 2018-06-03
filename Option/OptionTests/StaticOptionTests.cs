@@ -8,14 +8,14 @@ namespace OptionTests
         [Fact]
         public void SomeOfObject_ReceivesNonNullObject_ReturnsNonNull()
         {
-            IOption<object> option = Option.Some(new object());
+            Option<object> option = None.Value;
             Assert.NotNull(option);
         }
 
         [Fact]
         public void NoneOfObject_ReturnsNonNull()
         {
-            IOption<object> option = Option.None<object>();
+            Option<object> option = None.Value;
             Assert.NotNull(option);
         }
     }

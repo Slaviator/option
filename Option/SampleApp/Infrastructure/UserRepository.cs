@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using CodingHelmet.Optional;
-using CodingHelmet.SampleApp.Common;
+using CodingHelmet.Optional.Extensions;
 using CodingHelmet.SampleApp.Domain.Models;
 
 namespace CodingHelmet.SampleApp.Infrastructure
@@ -11,10 +11,10 @@ namespace CodingHelmet.SampleApp.Infrastructure
 
         public void Add(RegisteredUser user)
         {
-            this.UserNameToUser.Add(user.UserName, user);
+            UserNameToUser.Add(user.UserName, user);
         }
 
-        public IOption<RegisteredUser> TryFind(string userName) =>
-            this.UserNameToUser.TryGetValue(userName);
+        public Option<RegisteredUser> TryFind(string userName) =>
+            UserNameToUser.TryGetValue(userName);
     }
 }

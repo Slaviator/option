@@ -6,7 +6,7 @@
 
         public MoneyTransaction(decimal amount)
         {
-            this.Amount = amount;
+            Amount = amount;
         }
     }
 }

@@ -8,13 +8,12 @@ namespace CodingHelmet.SampleApp.Domain.ViewModels
 
         public MissingProduct(string productName)
         {
-            this.ProductName = productName;
+            ProductName = productName;
         }
 
         public string Render()
         {
-            return string.Format("Product {0} is not available.",
-                                 this.ProductName);
+            return $"Product {ProductName} is not available.";
         }
     }
 }

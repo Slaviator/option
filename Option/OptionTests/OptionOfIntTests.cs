@@ -3,17 +3,17 @@ using CodingHelmet.Optional;
 
 namespace OptionTests
 {
-    public class OptionOfIntTests: OptionInterfaceTests<int, string>
+    public class OptionOfIntTests : OptionInterfaceTests<int, string>
     {
         protected override int SampleValue => 5;
 
         protected override int AlternateSampleValue => 3;
 
-        protected override string SampleMapToValue => "something";
+        protected override string SampleMapToValue => SampleValue.ToString();
 
-        protected override IOption<int> CreateSome(int obj) => Option.Some(obj);
+        protected override Option<int> CreateSome(int obj) => obj;
 
-        protected override IOption<int> CreateNone() => Option.None<int>();
+        protected override Option<int> CreateNone() => None.Value;
 
         protected override bool AreSame(int a, int b) => a == b;
     }

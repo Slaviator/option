@@ -45,8 +45,6 @@
   <ItemGroup>
     <Compile Include="Application\ApplicatoinServices.cs" />
     <Compile Include="Application\ViewModels\Downtime.cs" />
-    <Compile Include="Common\DictionaryExtensions.cs" />
-    <Compile Include="Common\EnumerableExtensions.cs" />
     <Compile Include="Domain\DomainServices.cs" />
     <Compile Include="Domain\Interfaces\IAccount.cs" />
     <Compile Include="Domain\Interfaces\IDiscount.cs" />
@@ -80,6 +78,7 @@
       <Name>Option</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

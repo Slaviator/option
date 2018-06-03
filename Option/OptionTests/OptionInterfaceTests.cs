@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using CodingHelmet.Optional;
 using Xunit;
 
@@ -8,103 +7,116 @@ namespace OptionTests
     public abstract class OptionInterfaceTests<T, TMap>
     {
         [Fact]
-        public void Do_SomeReceivesAction_ActionIsInvoked()
+        public void Some_MatchesSomePattern()
         {
             bool callbackInvoked = false;
             Action<T> callback = obj => callbackInvoked = true;
 
-            IOption<T> option = this.CreateSome(this.SampleValue);
-            option.Do(callback);
+            Option<T> option = CreateSome(SampleValue);
+
+            if (option is Some<T> some)
+            {
+                callback(some);
+            }
 
             Assert.True(callbackInvoked);
         }
 
         [Fact]
-        public void Do_SomeContainingObjectReceivesAction_ActionReceivesThatContainedObject()
+        public void SomeContent_PassedToCallbeck_AfterPatternMatching()
         {
-            T expectedArgument = this.SampleValue;
+            T expectedArgument = SampleValue;
             T actualArgument = default(T);
             Action<T> callback = obj => actualArgument = obj;
 
-            IOption<T> option = this.CreateSome(expectedArgument);
-            option.Do(callback);
+            Option<T> option = CreateSome(expectedArgument);
 
-            Assert.True(this.AreSame(expectedArgument, actualArgument));
+            if (option is Some<T> some)
+            {
+                callback(some.Content);
+            }
+
+            Assert.True(AreSame(expectedArgument, actualArgument));
         }
 
         [Fact]
-        public void Do_NoneReceivesAction_ActionNotInvoked()
+        public void None_DoesNotMatchSomePattern()
         {
             bool callbackInvoked = false;
             Action<object> callback = obj => callbackInvoked = true;
 
-            IOption<object> option = Option.None<object>();
-            option.Do(callback);
+            Option<T> option = None.Value;
+
+            if (option is Some<T> some)
+            {
+                callback(some);
+            }
 
             Assert.False(callbackInvoked);
         }
 
         [Fact]
-        public void AsEnumerable_Some_ReturnsNonNull()
+        public void CreateSome_ReturnsNonNull()
         {
-            Assert.NotNull(this.CreateSome(this.SampleValue).AsEnumerable());
+            Assert.NotNull(CreateSome(SampleValue));
         }
 
         [Fact]
-        public void AsEnumerable_None_ReturnsNonNull()
+        public void CreateNone_ReturnsNonNull()
         {
-            Assert.NotNull(this.CreateNone().AsEnumerable());
+            Assert.NotNull(CreateNone());
         }
 
         [Fact]
-        public void AsEnumerable_Some_ReturnsOneElement()
+        public void CreateSome_NotEqualNone()
         {
-            Assert.Equal(1, this.CreateSome(this.SampleValue).AsEnumerable().Count());
+            Assert.NotEqual(None.Value, CreateSome(SampleValue));
         }
 
         [Fact]
-        public void AsEnumerable_None_ReturnsZeroElements()
+        public void CreateNone_EqualNone()
         {
-            Assert.Equal(0, this.CreateNone().AsEnumerable().Count());
+            Assert.Equal(None.Value, CreateNone());
         }
 
         [Fact]
-        public void AsEnumerable_SomeContainingObject_ResultContainsThatObject()
+        public void Some_EqualContent()
         {
-            T value = this.SampleValue;
-            Assert.True(this.CreateSome(value).AsEnumerable().Any(x => this.AreSame(value, x)));
+            T value = SampleValue;
+            Assert.Equal(value, CreateSome(value));
         }
 
         [Fact]
         public void Map_SomeReceivesMappingToObject_ReturnsSomeOfThatObject()
         {
-            TMap mappedValue = this.SampleMapToValue;
+            TMap mappedValue = SampleMapToValue;
 
-            IOption<T> option = this.CreateSome(this.SampleValue);
-            IOption<TMap> mapped = option.Map(_ => mappedValue);
+            Option<T> option = CreateSome(SampleValue);
+            Option<TMap> mapped = option.Map(_ => mappedValue);
 
-            Assert.Same(mappedValue, mapped.AsEnumerable().ElementAt(0));
+            Assert.Equal(mappedValue, mapped);
         }
 
         [Fact]
         public void Map_NoneReceivesMappingToObject_ReturnsNone()
         {
-            IOption<T> option = this.CreateNone();
-            IOption<TMap> mapped = option.Map(_ => this.SampleMapToValue);
+            Option<T> option = CreateNone();
+            Option<TMap> mapped = option.Map(_ => SampleMapToValue);
 
-            Assert.Equal(0, mapped.AsEnumerable().Count());
+            Assert.Equal(None.Value, mapped);
         }
 
         [Fact]
         public void Map_SomeReceivesMappingFunction_PassesContainedValueToMappingFunction()
         {
-            T expectedValue = this.SampleValue;
+            T expectedValue = SampleValue;
             T actualValue = default(T);
 
-            IOption<T> option = this.CreateSome(expectedValue);
-            IOption<T> mapped = option.Map(x => actualValue = x);
+            Option<T> option = CreateSome(expectedValue);
+            Option<T> mapped = option.Map(x => actualValue = x);
 
-            Assert.True(this.AreSame(expectedValue, actualValue));
+            Assert.True(AreSame(expectedValue, actualValue));
+            Assert.Equal(expectedValue, mapped);
         }
 
         [Fact]
@@ -112,8 +124,8 @@ namespace OptionTests
         {
             bool mappingInvoked = false;
 
-            IOption<T> option = this.CreateNone();
-            IOption<TMap> mapped = option.Map(_ =>
+            Option<T> option = CreateNone();
+            Option<TMap> mapped = option.Map(_ =>
             {
                 mappingInvoked = true;
                 return default(TMap);
@@ -125,31 +137,30 @@ namespace OptionTests
         [Fact]
         public void Collapse_SomeContainingValue_ReturnsContainedValue()
         {
-            T expectedValue = this.SampleValue;
-            IOption<T> option = this.CreateSome(expectedValue);
-            T actualValue = option.Fold(() => this.AlternateSampleValue);
+            T expectedValue = SampleValue;
+            Option<T> option = CreateSome(expectedValue);
+            T actualValue = option.Reduce(() => AlternateSampleValue);
 
-            Assert.True(this.AreSame(expectedValue, actualValue));
+            Assert.True(AreSame(expectedValue, actualValue));
         }
 
         [Fact]
         public void Collapse_NoneReceivesMethodWhichReturnsAlternateValue_ReturnsThatValue()
         {
-            T expectedValue = this.AlternateSampleValue;
-            IOption<T> option = this.CreateNone();
-            T actualValue = option.Fold(() => expectedValue);
+            T expectedValue = AlternateSampleValue;
+            Option<T> option = CreateNone();
+            T actualValue = option.Reduce(() => expectedValue);
 
-            Assert.True(this.AreSame(expectedValue, actualValue));
+            Assert.True(AreSame(expectedValue, actualValue));
         }
 
         protected abstract T SampleValue { get; }
         protected abstract T AlternateSampleValue { get; }
         protected abstract TMap SampleMapToValue { get; }
 
-        protected abstract IOption<T> CreateSome(T obj);
-        protected abstract IOption<T> CreateNone();
+        protected abstract Option<T> CreateSome(T obj);
+        protected abstract Option<T> CreateNone();
 
         protected abstract bool AreSame(T a, T b);
-
     }
 }

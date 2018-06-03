@@ -4,20 +4,13 @@ namespace CodingHelmet.SampleApp.Domain.ViewModels
 {
     class FailedPurchase : IPurchaseViewModel
     {
+        private static FailedPurchase _instance;
 
-        private static FailedPurchase instance;
+        public static FailedPurchase Instance => _instance ?? (_instance = new FailedPurchase());
 
-        public static FailedPurchase Instance
+        private FailedPurchase()
         {
-            get
-            {
-                if (instance == null)
-                    instance = new FailedPurchase();
-                return instance;
-            }
         }
-
-        private FailedPurchase() { }
 
         public string Render()
         {

@@ -8,44 +8,41 @@ namespace CodingHelmet.SampleApp.Domain.Models
 {
     class TransactionalAccount : IAccount
     {
-
         private RegisteredUser User { get; }
         private IList<MoneyTransaction> Transactions { get; } = new List<MoneyTransaction>();
 
         public TransactionalAccount(RegisteredUser user)
         {
-            this.User = user;
+            User = user;
         }
 
         public MoneyTransaction Deposit(decimal amount)
         {
-
             MoneyTransaction transaction = new MoneyTransaction(amount);
-            this.Transactions.Add(transaction);
+            Transactions.Add(transaction);
 
-            Log(string.Format($"{this.UserName} deposited {amount:C} balance {this.Balance:C}"));
+            Log(string.Format($"{UserName} deposited {amount:C} balance {Balance:C}"));
 
             return transaction;
-
         }
 
-        public IOption<MoneyTransaction> TryWithdraw(decimal amount)
+        public Option<MoneyTransaction> TryWithdraw(decimal amount)
         {
-            if (this.Balance < amount)
-                return Option.None<MoneyTransaction>();
+            if (Balance < amount)
+                return None.Value;
 
             MoneyTransaction transaction = new MoneyTransaction(-amount);
-            this.Transactions.Add(transaction);
+            Transactions.Add(transaction);
 
-            this.Log(string.Format($"{this.UserName} withdrew {amount:C} balance {this.Balance:C}"));
+            Log(string.Format($"{UserName} withdrew {amount:C} balance {Balance:C}"));
 
-            return Option.Some(transaction);
+            return transaction;
         }
 
-        public string UserName => this.User.UserName;
+        public string UserName => User.UserName;
 
         private decimal Balance =>
-            this.Transactions
+            Transactions
                 .Select(tran => tran.Amount)
                 .DefaultIfEmpty(0.0M).Sum();
 
@@ -56,6 +53,5 @@ namespace CodingHelmet.SampleApp.Domain.Models
             Console.WriteLine("\tLOG ===> {0}", message);
             Console.ForegroundColor = color;
         }
-
     }
 }

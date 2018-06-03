@@ -5,11 +5,11 @@ namespace CodingHelmet.SampleApp.Infrastructure
 {
     class ProductRepository
     {
-        public IOption<Product> TryFind(string itemName)
+        public Option<Product> TryFind(string itemName)
         {
             if (itemName.Length >= 9)
-                return Option.None<Product>();
-            return Option.Some(new Product(itemName));
+                return None.Value;
+            return new Product(itemName);
         }
     }
 }

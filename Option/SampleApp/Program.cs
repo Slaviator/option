@@ -6,18 +6,17 @@ using CodingHelmet.SampleApp.Presentation;
 
 namespace CodingHelmet.SampleApp
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             DemoRunner("Purchase demo", DemoPurchase);
             DemoRunner("Affiliate demo", DemoReferral);
             DemoRunner("Site maintenance demo", DemoMaintenance);
         }
 
-        static void DemoRunner(string title, Action demo)
+        private static void DemoRunner(string title, Action demo)
         {
-
             PrintTitle(title);
 
             try
@@ -30,22 +29,19 @@ namespace CodingHelmet.SampleApp
             }
 
             Pause();
-
         }
 
-        static void PrintTitle(string title)
+        private static void PrintTitle(string title)
         {
-        
             Console.OutputEncoding = Encoding.UTF8;
 
             Console.WriteLine();
-            Console.WriteLine("{0}", title.ToUpper());
-            Console.WriteLine("{0}", new string('-', title.Length));
+            Console.WriteLine($"{title.ToUpper()}");
+            Console.WriteLine($"{new string('-', title.Length)}");
             Console.WriteLine();
-
         }
 
-        static void Pause()
+        private static void Pause()
         {
             Console.WriteLine();
             Console.Write("Press ENTER to continue... ");
@@ -53,9 +49,8 @@ namespace CodingHelmet.SampleApp
             Console.Clear();
         }
 
-        static void DemoPurchase()
+        private static void DemoPurchase()
         {
-
             ApplicationServices app = new ApplicationServices();
 
             string userName = "Jack";
@@ -71,12 +66,10 @@ namespace CodingHelmet.SampleApp
 
             AnonymousPurchase(app, "book");
             AnonymousPurchase(app, "parachute");
-
         }
 
-        static void DemoReferral()
+        private static void DemoReferral()
         {
-
             ApplicationServices app = new ApplicationServices();
 
             string userName = "Jack";
@@ -84,9 +77,9 @@ namespace CodingHelmet.SampleApp
             app.RegisterUser(userName);
             app.Deposit(200);
             Purchase(app, "book");
-            
+
             app.RegisterUser("Joe", userName);
-                
+
             app.Login(userName);
             Purchase(app, "book");
 
@@ -94,12 +87,10 @@ namespace CodingHelmet.SampleApp
 
             app.Login(userName);
             Purchase(app, "book");
-
         }
-        
-        static void DemoMaintenance()
-        {
 
+        private static void DemoMaintenance()
+        {
             ApplicationServices app = new ApplicationServices();
 
             string userName = "Jack";
@@ -108,30 +99,31 @@ namespace CodingHelmet.SampleApp
             app.Deposit(150);
             Purchase(app, "book");
 
-            using (File.Create("maintenance.lock")) { }
+            using (File.Create("maintenance.lock"))
+            {
+            }
+
             Purchase(app, "book");
 
             File.Delete("maintenance.lock");
             Purchase(app, "book");
-
         }
 
-        static void Purchase(ApplicationServices app, string item)
+        private static void Purchase(ApplicationServices app, string item)
         {
             IPurchaseViewModel receipt = app.Purchase(item);
             PrintReceipt(receipt);
         }
 
-        static void AnonymousPurchase(ApplicationServices app, string item)
+        private static void AnonymousPurchase(ApplicationServices app, string item)
         {
             IPurchaseViewModel receipt = app.AnonymousPurchase(item);
             PrintReceipt(receipt);
         }
 
-        static void PrintReceipt(IPurchaseViewModel receipt)
+        private static void PrintReceipt(IPurchaseViewModel receipt)
         {
             Console.WriteLine(receipt.Render());
         }
-
     }
 }
