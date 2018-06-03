@@ -6,9 +6,9 @@
 
         public Car(string name, Color color) : base(color)
         {
-            this.Name = name;
+            Name = name;
         }
 
-        public override string ToString() => this.Name;
+        public override string ToString() => Name;
     }
 }

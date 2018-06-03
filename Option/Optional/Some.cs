@@ -5,36 +5,24 @@ namespace CodingHelmet.Optional
 {
     public sealed class Some<T> : Option<T>, IEquatable<Some<T>>
     {
-        public T Content { get; }
-
         public Some(T value)
         {
-            this.Content = value;
+            Content = value;
         }
 
-        public static implicit operator T(Some<T> some) =>
-            some.Content;
+        public T Content { get; }
 
-        public static implicit operator Some<T>(T value) =>
-            new Some<T>(value);
+        public static implicit operator T(Some<T> some) => some.Content;
 
-        public override Option<TResult> Map<TResult>(Func<T, TResult> map) =>
-            map(this.Content);
+        public static implicit operator Some<T>(T value) => new Some<T>(value);
 
-        public override Option<TResult> MapOptional<TResult>(Func<T, Option<TResult>> map) =>
-            map(this.Content);
+        public override Option<TResult> Map<TResult>(Func<T, TResult> map) => map(Content);
 
-        public override T Reduce(T whenNone) =>
-            this.Content;
+        public override Option<TResult> MapOptional<TResult>(Func<T, Option<TResult>> map) => map(Content);
 
-        public override T Reduce(Func<T> whenNone) =>
-            this.Content;
+        public override T Reduce(T whenNone) => Content;
 
-        public override string ToString() =>
-            $"Some({this.ContentToString})";
-
-        private string ContentToString =>
-            this.Content?.ToString() ?? "<null>";
+        public override T Reduce(Func<T> whenNone) => Content;
 
         public bool Equals(Some<T> other)
         {
@@ -47,7 +35,7 @@ namespace CodingHelmet.Optional
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj is Some<T> && Equals((Some<T>) obj);
+            return obj is Some<T> some && Equals(some);
         }
 
         public override int GetHashCode()
@@ -56,9 +44,13 @@ namespace CodingHelmet.Optional
         }
 
         public static bool operator ==(Some<T> a, Some<T> b) =>
-            (a is null && b is null) ||
-            (!(a is null) && a.Equals(b));
+            a is null && b is null ||
+            !(a is null) && a.Equals(b);
 
         public static bool operator !=(Some<T> a, Some<T> b) => !(a == b);
+
+        public override string ToString() => $"Some({ContentToString})";
+
+        private string ContentToString => Content?.ToString() ?? "<null>";
     }
 }

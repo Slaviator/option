@@ -8,14 +8,14 @@ namespace Demo.Models
 
         private Color(string label)
         {
-            this.Label = label;
+            Label = label;
         }
 
         public static Color Red => new Color("Red");
         public static Color Blue => new Color("Blue");
         public static Color Green => new Color("Green");
 
-        public override string ToString() => this.Label;
+        public override string ToString() => Label;
 
         public bool Equals(Color other)
         {
@@ -28,19 +28,19 @@ namespace Demo.Models
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Color) obj);
         }
 
         public static bool operator ==(Color a, Color b) =>
-            (a is null && b is null) ||
-            (!(a is null) && a.Equals(b));
+            a is null && b is null ||
+            !(a is null) && a.Equals(b);
 
         public static bool operator !=(Color a, Color b) => !(a == b);
 
         public override int GetHashCode()
         {
-            return (Label != null ? Label.GetHashCode() : 0);
+            return Label != null ? Label.GetHashCode() : 0;
         }
     }
 }

@@ -10,14 +10,14 @@ namespace Demo.Models
 
         public Person(string name, int age, Color favoriteColor)
         {
-            this.Name = name;
-            this.Age = age;
-            this.FavoriteColor = favoriteColor;
+            Name = name;
+            Age = age;
+            FavoriteColor = favoriteColor;
         }
 
         public Option<Car> TryGetCar() =>
-            this.Age >= 18 
-                ? (Option<Car>)new Car($"{this.Name}'s {this.FavoriteColor.Label.ToLower()} car", this.FavoriteColor) 
+            Age >= 18 
+                ? (Option<Car>)new Car($"{Name}'s {FavoriteColor.Label.ToLower()} car", FavoriteColor) 
                 : None.Value;
     }
 }

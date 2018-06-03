@@ -6,7 +6,7 @@
 
         protected Vehicle(Color color)
         {
-            this.Color = color;
+            Color = color;
         }
     }
 }
